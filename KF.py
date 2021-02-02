@@ -1,6 +1,6 @@
-import numbers
-import numpy as np
-import matplotlib.pyplot as plt  
+import numbers  #数字类型模块
+import numpy as np  #矩阵计算模块
+import matplotlib.pyplot as plt #绘图模块
 import math
 
 # 卡尔曼滤波器需要调用的矩阵类
@@ -18,15 +18,15 @@ class Matrix(object):
     # 矩阵的迹
     def trace(self):
         if not self.is_square():
-            raise(ValueError, "Cannot calculate the trace of a non-square matrix.")
+            raise ValueError("Cannot calculate the trace of a non-square matrix.")
         else:
             return self.g.trace()
     # 逆矩阵
     def inverse(self):
         if not self.is_square():
-            raise(ValueError, "Non-square Matrix does not have an inverse.")
+            raise ValueError("Non-square Matrix does not have an inverse.")
         if self.h > 2:
-            raise(NotImplementedError, "inversion not implemented for matrices larger than 2x2.")
+            raise NotImplementedError("inversion not implemented for matrices larger than 2x2.")
         if self.h == 1:
             m = Matrix([[1/self[0][0]]])
             return m
@@ -61,7 +61,7 @@ class Matrix(object):
     # 加法
     def __add__(self,other):
         if self.h != other.h or self.w != other.w:
-            raise(ValueError, "Matrices can only be added if the dimensions are the same") 
+            raise ValueError("Matrices can only be added if the dimensions are the same") 
         else:
             return Matrix(self.g + other.g)
 
@@ -72,14 +72,14 @@ class Matrix(object):
     #减法
     def __sub__(self, other):
         if self.h != other.h or self.w != other.w:
-            raise(ValueError, "Matrices can only be subtracted if the dimensions are the same") 
+            raise ValueError("Matrices can only be subtracted if the dimensions are the same") 
         else:
             return Matrix(self.g - other.g)
 
     # 矩阵乘法：两个矩阵相乘
     def __mul__(self, other):
         if self.w != other.h:
-            raise(ValueError, "number of columns of the pre-matrix must equal the number of rows of the post-matrix")    
+            raise ValueError("number of columns of the pre-matrix must equal the number of rows of the post-matrix")    
         #return Matrix(np.dot(self.g, other.g))
         return Matrix(self.g.dot(other.g))  
                   
@@ -91,15 +91,15 @@ class Matrix(object):
 
 
 # 生成汽车行驶的真实数据
-
 # 汽车从以初速度v0，加速度a行驶10秒钟，然后匀速行驶20秒
-# x0:initial distance, m
-# v0:initial velocity, m/s
-# a:acceleration，m/s^2
+# x0:初始距离, m
+# v0:初始速度, m/s
+# a:加速度，m/s^2
 # t1:加速行驶时间，s
 # t2:匀速行驶时间，s
 # dt:interval time, s
-def generate_data(x0, v0, a, t1, t2, dt):
+
+def generate_data(x0, v0, a, t1, t2, dt):      
     a_current = a 
     v_current = v0 
     t_current = 0
@@ -141,7 +141,7 @@ def generate_data(x0, v0, a, t1, t2, dt):
 
 # 生成雷达获得的数据。需要考虑误差，误差呈现高斯分布
 def generate_lidar(x_list, standard_deviation):
-    return x_list + np.random.normal(0, standard_deviation, len(x_list))
+    return x_list + np.random.normal(0, standard_deviation, len(x_list))        #标准正态分布，np.random.normal(loc=0, scale=1, size)
 
 # 获取汽车行驶的真实状态
 t_list, x_list, v_list, a_list = generate_data(100, 10, 5, 5, 20, 0.1)
@@ -155,7 +155,7 @@ lidar_x_list = generate_lidar(x_list, standard_deviation)
 lidar_t_list = t_list
 
 # 可视化.创建包含2*3个子图的视图
-fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(2, 3, figsize=(20, 15))
+fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(2, 3, figsize=(10, 7))
 
 # 真实距离
 ax1.set_title("truth distance") 
@@ -285,7 +285,7 @@ for i in range(len(lidar_x_list) - 1):
     x = x_prime + K * y
     P = (I - K * H) * P_prime
 
-    # Store distance and velocity belief and current time
+    # 存储距离、速度和当前时间
     x_result.append(x[0][0])
     v_result.append(x[1][0])
     time_result.append(lidar_t_list[i+1])
